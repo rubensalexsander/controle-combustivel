@@ -21,7 +21,7 @@ Link planilha e formulário de exemplo que deverão ser implantados: 🔗 https:
 - Abrir o terminal;
 - Escrever comandos que estão no arquivo "controle-combustivel/infor" para instalar dependências;
 - Abrir o arquivo "controle-combustivel/configs.py";
-- Fazer configurações:
+- Fazer configurações: ⚙️
   - install_path - Endereço de instalação
   - cia_name - Nome da delegacia que estara no relatorio mensal
   - vps_dict - Viaturas fixas da delegacia
@@ -39,7 +39,9 @@ Link planilha e formulário de exemplo que deverão ser implantados: 🔗 https:
 # Formulário de exemplo:
 ![Screenshot from 2025-04-06 19-57-57](https://github.com/user-attachments/assets/4448e55d-07e7-45da-a148-7ef6287c1039)
 
-# Planilha de respostas: (Dados fictícios ⚠️)
+# Planilha de respostas: 
+(Dados fictícios ⚠️)
+
 ![Screenshot from 2025-04-06 20-09-08](https://github.com/user-attachments/assets/c7c37a9b-af08-4181-bb88-20cf12e0c878)
 
 
