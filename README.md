@@ -6,7 +6,7 @@ Link planilha e formulário de exemplo que deverão ser implantados: https://dri
 # Funcionamento do sistema:
 - Após o policial realizar o abastecimento, deverá ser preenchido um formulário como o que está no link acima.
 - Os dados ficarão armazenados na planilha do Google Sheets e poderão ser analisados
-- O aplicativo "Controle Combustível" será implementado em um computador na sede da delegacia e através dele será possível gerar relatórios e análises dos abastecimentos.
+- O aplicativo "Controle Combustível" será implementado em um computador na sede da delegacia e através dele será possível gerar relatórios e análises dos abastecimentos com base nos dados dos preenchimentos dos formulários.
 - Inicialmente, o aplicativo "Controle Combustível" irá gerar uma planilha conforme modelo prévio com os dados de um mês específico.
 
 # Tecnologias do sistema
@@ -19,7 +19,7 @@ Link planilha e formulário de exemplo que deverão ser implantados: https://dri
 - Extrair arquivos;
 - Copiar a pasta "controle-combustivel" para o endereço de instalação;
 - Abrir o terminal;
-- Escrever comandos que estão no arquivo "controle-combustivel/infor"
+- Escrever comandos que estão no arquivo "controle-combustivel/infor" para instalar dependências;
 - Abrir o arquivo "controle-combustivel/configs.py";
 - Fazer configurações:
   - install_path - Endereço de instalação
@@ -31,4 +31,4 @@ Link planilha e formulário de exemplo que deverão ser implantados: https://dri
   - sheet_map = Dados que serão usados para processamento dos dados no aplicativo
 - Fazer um atalho da pasta "controle-combustivel/app" para a área de trabalho;
 - Renome o atalho para Controle Combustível ou qualquer nome de preferência;
-- Se preferir, é possível midar o icone do atalho para a imagem "police.ico" que está na pasta "controle-combustivel/img".
+- Se preferir, é possível mudar o icone do atalho para a imagem "police.ico" que está na pasta "controle-combustivel/img".
