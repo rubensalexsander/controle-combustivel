@@ -35,3 +35,11 @@ Link planilha e formulário de exemplo que deverão ser implantados: https://dri
 - Fazer um atalho da pasta "controle-combustivel/app" para a área de trabalho;
 - Renome o atalho para Controle Combustível ou qualquer nome de preferência;
 - Se preferir, é possível mudar o icone do atalho para a imagem "police.ico" que está na pasta "controle-combustivel/img".
+
+# Janelas do aplicativo:
+![Screenshot from 2025-04-06 19-49-48](https://github.com/user-attachments/assets/05ef2835-4f0e-4434-b933-78b4d074be98)
+![Screenshot from 2025-04-06 19-50-00](https://github.com/user-attachments/assets/08513a11-7389-49c4-a74e-4797b4e9a237)
+
+# Planilha de gasto:
+
+
