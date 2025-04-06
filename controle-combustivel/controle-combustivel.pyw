@@ -18,7 +18,7 @@ from datetime import datetime
 from lib.datepy import *
 from lib.selection_sort import *
 
-def get_gsheet_data():
+def get_gsheet_data(start_date, final_date):
     # Pegando dados da sheet google
     """Shows basic usage of the Sheets API.
     Prints values from a sample spreadsheet.
@@ -58,26 +58,15 @@ def get_gsheet_data():
     result = sheet.values().get(spreadsheetId=spread_sheet_id, range=pag_range).execute()
     values = result.get('values', [])
     
-    return values
-
-def plan_generation(query, mouth, year):
-    # Paths definitions
-    plan_standard_path = rf'{install_path}/other/controle-combustivel-padrao.xlsx'
-    db_path = rf'{install_path}/db/db.db' 
-    
-    # Datas
-    dt_inicio = f'01/{mouth}/{year}'
-    dt_final = f'{quant_day[mouth]}/{mouth}/{year}'
-    
     # Tratando dados da planilha google
-    df_sheet = pd.DataFrame(query)
+    df_sheet = pd.DataFrame(values)
     df_sheet = df_sheet.drop(0)
     
     # Selecionando dados que estão no intervalo
     for index, row in df_sheet.iterrows():
         date = row[sheet_map['data']]
         # Verifica se a data da row está no intervalo
-        if not date_between(date=date, date1=dt_inicio, date2=dt_final):
+        if not date_between(date=date, date1=start_date, date2=final_date):
             # Remove o row que não está no range
             df_sheet = df_sheet.drop(index)
     
@@ -102,6 +91,13 @@ def plan_generation(query, mouth, year):
 
     # Retoma dados para df_sheet
     df_sheet = new_df
+    
+    return df_sheet
+
+def plan_generation(df_sheet, start_date, final_date):
+    # Paths definitions
+    plan_standard_path = rf'{install_path}/other/controle-combustivel-padrao.xlsx'
+    db_path = rf'{install_path}/db/db.db' 
     
     # Abre planilha padrão
     arq = load_workbook(plan_standard_path)
@@ -180,11 +176,11 @@ def plan_generation(query, mouth, year):
         plan[f'K{y_val}'].number_format = 'R$ #,##0.00'
              
     # Adiciona datas
-    plan['P2'] = dt_inicio
-    plan['Q2'] = dt_final    
+    plan['P2'] = start_date
+    plan['Q2'] = final_date    
     
     # Salva planilha final
-    arq.save(f"{install_path}/app/planilha-controle-combustível-{mouth}de{year}-{randint(10001,99999)}.xlsx")
+    arq.save(f"{install_path}/app/planilha-controle-combustível-{start_date.replace('/', '-')}a{final_date.replace('/', '-')}-{randint(1001,9999)}.xlsx")
 
 class WinMain():
     def __init__(self, resolution=[320, 240], title='Abastecimento-VP'):
@@ -233,7 +229,7 @@ class WinMain():
         tx_mensagem = tk.Label(frame_title_bt, text='Gerar planilha abastecimento', font=['arial', 14])
         tx_mensagem.pack(padx=5, pady=[15, 0], anchor='w')
         
-        tx_cia_name = tk.Label(frame_title_bt, text=f'{cia_name}', font=['arial', 12])
+        tx_cia_name = tk.Label(frame_title_bt, text=f'{cia_name}', font=['arial', 11])
         tx_cia_name.pack(padx=8, anchor='w')
         
         frame = tk.Frame(self.win)
@@ -252,9 +248,9 @@ class WinMain():
         if len(str(datetime.now().month)) == 1: current_month = '0' + str(datetime.now().month)
         else: current_month = str(datetime.now().month)
         
-        mouth_var = tk.StringVar()
+        month_var = tk.StringVar()
         
-        combo_mes = ttk.Combobox(frame_mes, textvariable=mouth_var, width=5)
+        combo_mes = ttk.Combobox(frame_mes, textvariable=month_var, width=5)
         combo_mes.pack(side='left')
         combo_mes['values'] = list(quant_day.keys())
         combo_mes.current(list(quant_day.keys()).index(current_month))
@@ -279,12 +275,19 @@ class WinMain():
             tx_mensagem['text'] = 'Buscando dados da planilha Google.'
             win_main.win.update()
             
-            query = get_gsheet_data()
+            month = month_var.get()
+            year = year_var.get()
+            
+            # Datas
+            start_date = f'01/{month}/{year}'
+            final_date = f'{quant_day[month]}/{month}/{year}'
+            
+            query = get_gsheet_data(start_date, final_date)
             
             tx_mensagem['text'] = 'Gerando planilha.'
             win_main.win.update()
             
-            plan_generation(query=query, mouth=mouth_var.get(), year=year_var.get())
+            plan_generation(query, start_date, final_date)
             
             tx_mensagem['text'] = 'Planilha gerada.'
             win_main.win.update()
@@ -314,7 +317,7 @@ class WinConfig():
         self.win.focus_force()
         self.win.grab_set()
         self.win.option_add('*tearOff', tk.FALSE)
-        self.win.iconbitmap(rf'{install_path}/img/police.ico')
+        #self.win.iconbitmap(rf'{install_path}/img/police.ico')
         # Definições da janela #END
         
         self.constructor()
