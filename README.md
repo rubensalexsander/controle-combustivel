@@ -36,6 +36,13 @@ Link planilha e formulário de exemplo que deverão ser implantados: https://dri
 - Renome o atalho para Controle Combustível ou qualquer nome de preferência;
 - Se preferir, é possível mudar o icone do atalho para a imagem "police.ico" que está na pasta "controle-combustivel/img".
 
+# Formulário de exemplo:
+![Screenshot from 2025-04-06 19-57-57](https://github.com/user-attachments/assets/4448e55d-07e7-45da-a148-7ef6287c1039)
+
+# Planilha de respostas:
+![Screenshot from 2025-04-06 20-09-08](https://github.com/user-attachments/assets/c7c37a9b-af08-4181-bb88-20cf12e0c878)
+
+
 # Janelas do aplicativo:
 ![Screenshot from 2025-04-06 19-49-48](https://github.com/user-attachments/assets/05ef2835-4f0e-4434-b933-78b4d074be98)
 ![Screenshot from 2025-04-06 19-50-00](https://github.com/user-attachments/assets/08513a11-7389-49c4-a74e-4797b4e9a237)
