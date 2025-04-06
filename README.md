@@ -23,12 +23,12 @@ Link planilha e formulário de exemplo que deverão ser implantados: https://dri
 - Abrir o arquivo "controle-combustivel/configs.py";
 - Fazer configurações:
   - install_path - Endereço de instalação
-  - cia_name = Nome da delegacia que estara no relatorio mensal
-  - vps_dict = Viaturas fixas da delegacia
-  - spread_sheet_id = Id da planilha Google criada
-  - sheet_pag_name = Nome da página da planilha que os dados do formulário estão
-  - sheet_range = Intervalo dos dados. Exemplo:'C:I' (O aplicativo só irá solicitar os dados de C a I)
-  - sheet_map = Dados que serão usados para processamento dos dados no aplicativo
+  - cia_name - Nome da delegacia que estara no relatorio mensal
+  - vps_dict - Viaturas fixas da delegacia
+  - spread_sheet_id - Id da planilha Google criada
+  - sheet_pag_name - Nome da página da planilha que os dados do formulário estão
+  - sheet_range - Intervalo dos dados. Exemplo:'C:I' (O aplicativo só irá solicitar os dados de C a I)
+  - sheet_map - Dados que serão usados para processamento dos dados no aplicativo
 - Fazer um atalho da pasta "controle-combustivel/app" para a área de trabalho;
 - Renome o atalho para Controle Combustível ou qualquer nome de preferência;
 - Se preferir, é possível mudar o icone do atalho para a imagem "police.ico" que está na pasta "controle-combustivel/img".
