@@ -1,17 +1,17 @@
 # App sets ------------------------------------------------------
-install_path = r'/home/alex/Documents/dev/repositorios/abastecimento-vp/abastecimento-vp'
-cia_name = '6° Pel / 2° Gp - Crucilândia'
+install_path = r'/home/alex/Documents/dev/repositorios/controle-combustivel/controle-combustivel'
+cia_name = 'Delegacia 1 / 2° Batalhão - Cidade exemplo'
 resolution = [320, 240]
 
 # VPs sets ------------------------------------------------------
 vps_dict = {
-    '34730':['SYC-5E03', 5],
-    '27990':['QMV-1210', 7],
+    '123':['AAA-5544', 5],
+    '456':['BBB-2211', 7],
     'outros':['', 9],
 }
 
 # Google sheet sets ---------------------------------------------
-spread_sheet_id = '1IbouRnIx2tJbI_ScCUALjW_CPJocKLitErhoL1MOcsU'
+spread_sheet_id = ''
 sheet_pag_name = 'plan1'
 sheet_range = 'C:I'
 

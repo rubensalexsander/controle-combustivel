@@ -24,21 +24,22 @@ def get_gsheet_data():
     Prints values from a sample spreadsheet.
     """
     
-    credentials_path = rf'{install_path}/other/credentials.json'
+    credentials_path = rf'{install_path}/credentials/credentials.json'
+    token_path = rf'{install_path}/credentials/token.pickle'
     
     # If modifying these scopes, delete the file token.pickle.
     SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
     
     # The ID and range of a sample spreadsheet.
     pag_range = f"'{sheet_pag_name}'!{sheet_range}"
-    
     creds = None
-    # The file token.pickle stores the user's access and refresh tokens, and is
-    # created automatically when the authorization flow completes for the first
-    # time.
-    if os.path.exists(f'{install_path}/other/token.pickle'):
-        with open(f'{install_path}/other/token.pickle', 'rb') as token:
+    
+    # The file token.pickle stores the user's access and refresh tokens, and is created automatically when 
+    # the authorization flow completes for the first time.
+    if os.path.exists(token_path):
+        with open(token_path, 'rb') as token:
             creds = pickle.load(token)
+            
     # If there are no (valid) credentials available, let the user log in.
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
@@ -47,7 +48,7 @@ def get_gsheet_data():
             flow = InstalledAppFlow.from_client_secrets_file(credentials_path, SCOPES)
             creds = flow.run_local_server(port=0)
         # Save the credentials for the next run
-        with open(f'{install_path}/other/token.pickle', 'wb') as token:
+        with open(token_path, 'wb') as token:
             pickle.dump(creds, token)
 
     service = build('sheets', 'v4', credentials=creds)
