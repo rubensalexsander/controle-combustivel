@@ -31,7 +31,7 @@ Link planilha e formulário de exemplo que deverão ser implantados: 🔗 https:
   - sheet_map - Dados que serão usados para processamento dos dados no aplicativo
 - Criar credenciais do Google Sheets. (Link para criação da credencial: 🔗 https://developers.google.com/workspace/guides/create-credentials?hl=pt-br)
 - No Google Cloud, clique em Credenciais, em IDs do cliente OAuth 2.0, clique na sua credencial e em "Chave secreta do cliente" clique na seta de download do JSON;
-- Após o download, copie o arquivo "credentials.json" para a pasta "controle-combustivel/credentials"; ⚠️ Obs.: Na primeira execução, será requerido login em uma conta Google. Certifique-se de que a planilha está acessível para seu usuário!
+- Após o download, copie o arquivo "credentials.json" para a pasta "controle-combustivel/credentials"; ⚠️ Na primeira execução, será requerido login em uma conta Google. Certifique-se de que a planilha está acessível para seu usuário!
 - Fazer um atalho da pasta "controle-combustivel/app" para a área de trabalho;
 - Renomeie o atalho para Controle Combustível ou qualquer nome de preferência;
 - Se preferir, é possível mudar o ícone do atalho para a imagem "police.ico" que está na pasta "controle-combustivel/img".
