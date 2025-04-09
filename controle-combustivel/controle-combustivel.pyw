@@ -9,21 +9,16 @@ from openpyxl.styles.borders import Border, Side
 from openpyxl.styles import Alignment
 from openpyxl.utils import rows_from_range
 from random import randint
-from lib.arsqlite import *
+from datetime import datetime
 import pandas as pd
 import tkinter as tk
 import tkinter.ttk as ttk
+from lib.arsqlite import *
 from configs import *
-from datetime import datetime
-from lib.datepy import *
-from lib.selection_sort import *
 
 def get_gsheet_data(start_date, final_date):
-    # Pegando dados da sheet google
-    """Shows basic usage of the Sheets API.
-    Prints values from a sample spreadsheet.
-    """
-    
+    ''' Buscando dados de planilha Google Sheets usando o Sheets API '''
+    # Definições
     credentials_path = rf'{install_path}/credentials/credentials.json'
     token_path = rf'{install_path}/credentials/token.pickle'
     
@@ -62,35 +57,23 @@ def get_gsheet_data(start_date, final_date):
     df_sheet = pd.DataFrame(values)
     df_sheet = df_sheet.drop(0)
     
+    # Converte coluna data e hora para datetime
+    df_sheet[sheet_map['datahora']] = pd.to_datetime(df_sheet[sheet_map['datahora']], format='%d/%m/%Y %H:%M:%S')
+    
     # Selecionando dados que estão no intervalo
     for index, row in df_sheet.iterrows():
-        date = row[sheet_map['data']]
+        date = row[sheet_map['datahora']]
+        
         # Verifica se a data da row está no intervalo
-        if not date_between(date=date, date1=start_date, date2=final_date):
+        if not ((date >= start_date) and (date <= final_date)):
             # Remove o row que não está no range
             df_sheet = df_sheet.drop(index)
     
+    # Ordena pelo datetime
+    df_sheet = df_sheet.sort_values(by=sheet_map['datahora'])
+    
     # Redefine o index de df_sheet
     df_sheet = df_sheet.reset_index(drop=True)
-    
-    # Ordenando dados que estão no intervalo pela data
-    new_df = pd.DataFrame(columns=df_sheet.columns)
-    
-    for i in range(df_sheet.shape[0]):
-        # Encontra índice de row da menor data
-        minor_index = get_minor(df_sheet, sheet_map['data'], date_minor)
-        
-        # Adiciona row de menor data ao novo df
-        new_df.loc[len(new_df)] = df_sheet.iloc[minor_index]
-        
-        # Remove row do índice de menor data
-        df_sheet = df_sheet.drop(minor_index)
-        
-        # Redefine o index de df_sheet
-        df_sheet = df_sheet.reset_index(drop=True)
-
-    # Retoma dados para df_sheet
-    df_sheet = new_df
     
     return df_sheet
 
@@ -116,13 +99,13 @@ def plan_generation(df_sheet, start_date, final_date):
     for index, row in df_sheet.iterrows():
         # Define variáveis
         prefixo = row[sheet_map['prefixo']]
-        data = row[sheet_map['data']]
-        hora = row[sheet_map['hora']]
+        data = row[sheet_map['datahora']].strftime('%d/%m/%Y')
+        hora = row[sheet_map['datahora']].strftime('%H:%M')
         km = int(row[sheet_map['km']])
         litragem = row[sheet_map['litragem']]
         combustivel = row[sheet_map['combustivel']]
         origem = row[sheet_map['origem']]
-
+        
         if prefixo in list(vps_dict_copy.keys()):
             placa = vps_dict_copy[prefixo][0]
             y_val = int(vps_dict_copy[prefixo][1])
@@ -174,13 +157,14 @@ def plan_generation(df_sheet, start_date, final_date):
         plan[f'J{y_val}'].number_format = 'R$ #,##0.00'
         plan[f'K{y_val}'] = f'=I{y_val}*J{y_val}'
         plan[f'K{y_val}'].number_format = 'R$ #,##0.00'
-             
+    
     # Adiciona datas
     plan['P2'] = start_date
-    plan['Q2'] = final_date    
+    plan['Q2'] = final_date 
     
     # Salva planilha final
-    arq.save(f"{install_path}/app/planilha-controle-combustível-{start_date.replace('/', '-')}a{final_date.replace('/', '-')}-{randint(1001,9999)}.xlsx")
+    save_path = f"{install_path}/app/planilha-controle-combustível-{str(start_date.strftime('%m/%Y')).replace('/', '-')}a{str(final_date.strftime('%m/%Y')).replace('/', '-')}-{randint(1001,9999)}.xlsx"
+    arq.save(save_path)
 
 class WinMain():
     def __init__(self, resolution=[320, 240], title='Abastecimento-VP'):
@@ -279,8 +263,8 @@ class WinMain():
             year = year_var.get()
             
             # Datas
-            start_date = f'01/{month}/{year}'
-            final_date = f'{quant_day[month]}/{month}/{year}'
+            start_date = datetime.strptime(f'01/{month}/{year} 00:00:00', '%d/%m/%Y %H:%M:%S')
+            final_date = datetime.strptime(f'{quant_day[month]}/{month}/{year} 23:59:59', '%d/%m/%Y %H:%M:%S')
             
             query = get_gsheet_data(start_date, final_date)
             

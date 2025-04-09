@@ -13,16 +13,15 @@ vps_dict = {
 # Google sheet sets ---------------------------------------------
 spread_sheet_id = '19ogjTzqBT0_v-N_7EGmL2eyP22-_E-LhOCB6SR206OA'
 sheet_pag_name = 'plan1'
-sheet_range = 'B:H'
+sheet_range = 'B:G'
 
 sheet_map = { #converted to python list (-1)
         'prefixo':0,
-        'data':1,
-        'hora':2,
-        'km':3,
-        'litragem':4,
-        'combustivel':5,
-        'origem':6
+        'datahora':1,
+        'km':2,
+        'litragem':3,
+        'combustivel':4,
+        'origem':5
     }
 
 # Standard plan sets -----------------------------------------------
