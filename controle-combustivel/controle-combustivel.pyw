@@ -314,7 +314,7 @@ class WinMain():
             ax.set_ylabel("Gasto total (R$)")
             
             # Define texo para mostrar
-            string = 'INFORMAÇÕES:\n'
+            string = 'Informações:\n'
             string += f'\n\n'
             string += f'Etanol: {total_gasto_etanol_litragem:.2f} litros\n'.replace('.', ',')
             string += f'Gasolina: {total_gasto_gasolina_litragem:.2f} litros\n'.replace('.', ',')
@@ -322,12 +322,12 @@ class WinMain():
             string += f'\n\n'
             string += f'Gastos Prefeitura: R${total_gasto_prefeitura:.2f}\n'.replace('.', ',')
             string += f'Gastos Estado: R${total_gasto_estado:.2f}\n'.replace('.', ',')
-            string += f'\n\n\n\n\n\n\n\n\n\n'
+            string += f'\n\n\n'
             string += f'Gasto Total: R${gasto_total_periodo:.2f}\n'.replace('.', ',')
             
             # Escreve informações ao lado do gráfico
-            fig.text(0.67, 0.5, string, fontsize=10, ha='left', va='center')
-            fig.subplots_adjust(right=0.65, bottom=0.15)
+            fig.text(0.72, 0.65, string, fontsize=8, ha='left', va='center')
+            fig.subplots_adjust(right=0.7, bottom=0.15)
             fig.canvas.manager.set_window_title(f"Análise Controle de Combustível {start_date.strftime('%m/%Y')}")
 
             plt.show()
