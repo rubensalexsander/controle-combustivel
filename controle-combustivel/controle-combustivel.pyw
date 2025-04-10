@@ -307,7 +307,7 @@ class WinMain():
             ax.plot(dados_data, dados_gasto_acul_total, color='blue', marker='o', linestyle='--')
             plt.setp(ax.get_xticklabels(), rotation=55, fontsize=8)
             ax.set_title(f"Gasto de combusível {start_date.strftime('%d/%m')} a {final_date.strftime('%d/%m')}")
-            ax.set_xlabel("Dia")
+            ax.set_xlabel("Data")
             ax.set_ylabel("Gasto total (R$)")
             
             # Define texo para mostrar
