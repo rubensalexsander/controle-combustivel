@@ -1,7 +1,7 @@
 # App sets ------------------------------------------------------
 install_path = r'/home/alex/Documents/dev/repositorios/controle-combustivel-public/controle-combustivel'
 cia_name = 'Delegacia A - Cidade exemplo'
-resolution = [320, 240]
+resolution = [380, 285]
 
 # VPs sets ------------------------------------------------------
 vps_dict = {

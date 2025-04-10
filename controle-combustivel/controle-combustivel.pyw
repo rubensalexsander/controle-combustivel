@@ -15,6 +15,7 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from lib.arsqlite import *
 from configs import *
+import matplotlib.pyplot as plt
 
 def get_gsheet_data(start_date, final_date):
     ''' Buscando dados de planilha Google Sheets usando o Sheets API '''
@@ -167,7 +168,7 @@ def plan_generation(df_sheet, start_date, final_date):
     arq.save(save_path)
 
 class WinMain():
-    def __init__(self, resolution=[320, 240], title='Abastecimento-VP'):
+    def __init__(self, resolution=[400, 300], title='Controle Combustível'):
         self.running = True
         self.resolution = resolution
         self.title = title
@@ -183,9 +184,8 @@ class WinMain():
         self.win.protocol("WM_DELETE_WINDOW", self.finish)
         self.win.option_add('*tearOff', tk.FALSE)
         self.win.resizable(width=0, height=0)
-        #self.win.iconbitmap(rf'{install_path}/img/police.ico')
-        # Definições da janela #END
         
+        # Chama construtor da janela
         self.constructor()
     
     def finish(self):
@@ -204,17 +204,139 @@ class WinMain():
         photo = tk.PhotoImage(file=rf'{install_path}/img/gear.png')
         self.photo = photo
         
+        photo_grafico = tk.PhotoImage(file=rf'{install_path}/img/grafico.png')
+        self.photo_grafico = photo_grafico
+        
         frame_title_bt = tk.Frame(self.win)
-        frame_title_bt.pack(fill='x', padx=5, pady=[0, 5])
+        frame_title_bt.pack(fill='x', padx=5, pady=[0, 5], side=tk.TOP)
         
-        bt_configurar = ttk.Button(frame_title_bt, image=photo, command=self.open_config, width=10)
-        bt_configurar.pack(pady=[5, 0], side=tk.RIGHT)
+        frame_title = tk.Frame(frame_title_bt)
+        frame_title.pack(fill='x', padx=5, pady=[0, 5], side=tk.LEFT, anchor='nw')
         
-        tx_mensagem = tk.Label(frame_title_bt, text='Gerar planilha abastecimento', font=['arial', 14])
+        tx_mensagem = tk.Label(frame_title, text='Gerar planilha abastecimento', font=['arial', 14])
         tx_mensagem.pack(padx=5, pady=[15, 0], anchor='w')
         
-        tx_cia_name = tk.Label(frame_title_bt, text=f'{cia_name}', font=['arial', 11])
+        tx_cia_name = tk.Label(frame_title, text=f'{cia_name}', font=['arial', 11])
         tx_cia_name.pack(padx=8, anchor='w')
+        
+        frame_bts = tk.Frame(frame_title_bt)
+        frame_bts.pack(fill='x', padx=5, pady=[0, 5], side=tk.RIGHT)
+        
+        bt_configurar = ttk.Button(frame_bts, image=photo, command=self.open_config, width=10)
+        bt_configurar.pack(pady=[5, 0], side=tk.TOP)
+        
+        def fazer_grafico():
+            # Pega mês e ano
+            month = month_var.get()
+            year = year_var.get()
+            
+            # Datas
+            start_date = datetime.strptime(f'01/{month}/{year} 00:00:00', '%d/%m/%Y %H:%M:%S')
+            final_date = datetime.strptime(f'{quant_day[month]}/{month}/{year} 23:59:59', '%d/%m/%Y %H:%M:%S')
+            
+            # Recupera dados da planilha
+            query = get_gsheet_data(start_date, final_date)
+            
+            # Manipula dados
+            dados_data = []
+            total_gasto_etanol_val = 0
+            total_gasto_etanol_litragem = 0
+            total_gasto_gasolina_val = 0
+            total_gasto_gasolina_litragem = 0
+            total_gasto_diesel_val = 0
+            total_gasto_diesel_litragem = 0
+            dados_gasto_acul_total = []
+            total_gasto_prefeitura = 0
+            total_gasto_estado = 0
+            
+            # Vaores combustiveis
+            # Abrindo DB
+            db_path = rf'{install_path}/db/db.db' 
+            db = DbSqlite(local=db_path)
+            
+            val_litro_etanol = db.get_instance(table='combustivel', key=['nome', 'Etanol'])[0][2]
+            val_litro_gasolina = db.get_instance(table='combustivel', key=['nome', 'Gasolina'])[0][2]
+            val_litro_diesel = db.get_instance(table='combustivel', key=['nome', 'Diesel'])[0][2]
+            
+            gasto_total = 0
+            
+            # Transforma litragem para gasto aculmulado em R$
+            for index, row in query.iterrows():
+                # Limpa o gráfico de ele existir
+                #ax.clf()
+                
+                # Define variáveis
+                dados_data.append(row[sheet_map['datahora']].strftime('%d/%m'))
+                
+                litragem = float(row[sheet_map['litragem']].replace(',', '.'))
+                combustivel = row[sheet_map['combustivel']]
+                origem = row[sheet_map['origem']]
+                
+                if combustivel == 'Etanol':
+                    # Total do abastecimento
+                    valor_total = litragem * val_litro_etanol
+                    
+                    # Adiciona às variáveis
+                    total_gasto_etanol_val += valor_total
+                    total_gasto_etanol_litragem += litragem
+                elif combustivel == 'Gasolina':
+                    # Total do abastecimento
+                    valor_total = litragem * val_litro_gasolina
+                    
+                    # Adiciona às variáveis
+                    total_gasto_gasolina_val += valor_total
+                    total_gasto_gasolina_litragem += litragem
+                elif combustivel == 'Diesel':
+                    # Total do abastecimento
+                    valor_total = litragem * val_litro_diesel
+                    
+                    # Adiciona às variáveis
+                    total_gasto_diesel_val += valor_total
+                    total_gasto_diesel_litragem += litragem
+                
+                # Soma à variável de aculmulação
+                gasto_total += valor_total
+                
+                # Adiciona à serie temporal
+                dados_gasto_acul_total.append(gasto_total)
+                
+                if origem == 'Prefeitura':
+                    total_gasto_prefeitura += valor_total
+                elif origem == 'Estado':
+                    total_gasto_estado += valor_total
+                
+            gasto_total_periodo = dados_gasto_acul_total[-1]
+            
+            fig, ax = plt.subplots()
+            
+            # Cria gráfico
+            ax.plot(dados_data, dados_gasto_acul_total, color='blue', marker='o', linestyle='--')
+            plt.setp(ax.get_xticklabels(), rotation=55, fontsize=8)
+            ax.set_title(f"Gasto de combusível {start_date.strftime('%d/%m')} a {dados_data[-1]}")
+            ax.set_xlabel("Dia")
+            ax.set_ylabel("Gasto total (R$)")
+            
+            # Define texo para mostrar
+            string = 'INFORMAÇÕES:\n'
+            string += f'\n\n'
+            string += f'Etanol: {total_gasto_etanol_litragem:.2f} litros\n'.replace('.', ',')
+            string += f'Gasolina: {total_gasto_gasolina_litragem:.2f} litros\n'.replace('.', ',')
+            string += f'Diesel: {total_gasto_diesel_litragem:.2f} litros\n'.replace('.', ',')
+            string += f'\n\n'
+            string += f'Gastos Prefeitura: R${total_gasto_prefeitura:.2f}\n'.replace('.', ',')
+            string += f'Gastos Estado: R${total_gasto_estado:.2f}\n'.replace('.', ',')
+            string += f'\n\n\n\n\n\n\n\n\n\n'
+            string += f'Gasto Total: R${gasto_total_periodo:.2f}\n'.replace('.', ',')
+            
+            # Escreve informações ao lado do gráfico
+            fig.text(0.67, 0.5, string, fontsize=10, ha='left', va='center')
+            fig.subplots_adjust(right=0.65, bottom=0.15)
+            fig.canvas.manager.set_window_title(f"Análise Controle de Combustível {start_date.strftime('%m/%Y')}")
+
+            plt.show()
+        
+        bt_grafico = ttk.Button(frame_bts, image=photo_grafico, command=fazer_grafico, width=10)
+        bt_grafico.pack(pady=[5, 0])
         
         frame = tk.Frame(self.win)
         frame.pack(fill='both', padx=10)
