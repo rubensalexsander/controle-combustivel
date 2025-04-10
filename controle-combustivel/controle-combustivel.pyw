@@ -422,8 +422,6 @@ class WinConfig():
         self.win.focus_force()
         self.win.grab_set()
         self.win.option_add('*tearOff', tk.FALSE)
-        #self.win.iconbitmap(rf'{install_path}/img/police.ico')
-        # Definições da janela #END
         
         self.constructor()
         
