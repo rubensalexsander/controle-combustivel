@@ -306,7 +306,7 @@ class WinMain():
             
             ax.plot(dados_data, dados_gasto_acul_total, color='blue', marker='o', linestyle='--')
             plt.setp(ax.get_xticklabels(), rotation=55, fontsize=8)
-            ax.set_title(f"Gasto de combusível {start_date.strftime('%d/%m')} a {dados_data[-1]}")
+            ax.set_title(f"Gasto de combusível {start_date.strftime('%d/%m')} a {final_date.strftime('%d/%m')}")
             ax.set_xlabel("Dia")
             ax.set_ylabel("Gasto total (R$)")
             
@@ -319,11 +319,11 @@ class WinMain():
             string += f'\n\n'
             string += f'Gastos Prefeitura: R${total_gasto_prefeitura:.2f}\n'.replace('.', ',')
             string += f'Gastos Estado: R${total_gasto_estado:.2f}\n'.replace('.', ',')
-            string += f'\n\n\n'
-            string += f'Gasto Total: R${dados_gasto_acul_total[-1]:.2f}\n'.replace('.', ',')
+            string += f'\n\n'
             
             # Escreve informações ao lado do gráfico
-            fig.text(0.72, 0.65, string, fontsize=8, ha='left', va='center')
+            fig.text(0.72, 0.5, string, fontsize=8, ha='left', va='center')
+            fig.text(0.72, 0.3, f'Gasto Total: R${dados_gasto_acul_total[-1]:.2f}\n'.replace('.', ','), fontsize=8, fontweight='bold', ha='left', va='center')
             fig.subplots_adjust(right=0.7, bottom=0.15)
             fig.canvas.manager.set_window_title(f"Análise Controle de Combustível {start_date.strftime('%m/%Y')}")
 
@@ -423,6 +423,7 @@ class WinConfig():
         self.win.grab_set()
         self.win.option_add('*tearOff', tk.FALSE)
         
+        # Chama o construtor da janela
         self.constructor()
         
     def finish(self):
