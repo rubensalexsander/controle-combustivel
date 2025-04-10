@@ -15,7 +15,7 @@ Sistema desenvolvido para **atividade extensionista do curso de Ciências da Com
 - Python (*Google Sheets API, Pandas, Tkinter, Openpyxl e outras bibliotecas*)
 
 # Como implementar o sistema:
-- Fazer o download e instalar o Python em 🔗 https://www.python.org;
+- Fazer o download e instalar o **Python** em 🔗 https://www.python.org;
 - Fazer o download deste repositório;
 - Extrair arquivos;
 - Copiar a pasta "controle-combustivel" para o endereço de instalação;
@@ -30,7 +30,7 @@ Sistema desenvolvido para **atividade extensionista do curso de Ciências da Com
   - sheet_pag_name - Nome da página da planilha que os dados do formulário estão
   - sheet_range - Intervalo dos dados. Exemplo:'C:I' (O aplicativo só irá solicitar os dados de C a I)
   - sheet_map - Dados que serão usados para processamento dos dados no aplicativo
-- Criar credenciais do Google Sheets. (Link para criação da credencial: 🔗 https://developers.google.com/workspace/guides/create-credentials?hl=pt-br)
+- Criar credenciais do Google Sheets. (Link para criação da **credencial**: 🔗 https://developers.google.com/workspace/guides/create-credentials?hl=pt-br)
 - No Google Cloud, clique em Credenciais, em IDs do cliente OAuth 2.0, clique na sua credencial e em "Chave secreta do cliente" clique na seta de download do JSON;
 - Após o download, copie o arquivo "credentials.json" para a pasta "controle-combustivel/credentials"; ⚠️ **Na primeira execução, será requerido login em uma conta Google. Certifique-se de que a planilha está acessível para seu usuário!**
 - Faça um atalho da pasta "controle-combustivel/app" para a área de trabalho;
