@@ -249,7 +249,7 @@ class WinMain():
             total_gasto_prefeitura = 0
             total_gasto_estado = 0
             
-            # Vaores combustiveis
+            # Valores combustiveis
             # Abrindo DB
             db_path = rf'{install_path}/db/db.db' 
             db = DbSqlite(local=db_path)
@@ -262,9 +262,6 @@ class WinMain():
             
             # Transforma litragem para gasto aculmulado em R$
             for index, row in query.iterrows():
-                # Limpa o gráfico de ele existir
-                #ax.clf()
-                
                 # Define variáveis
                 dados_data.append(row[sheet_map['datahora']].strftime('%d/%m'))
                 
@@ -306,7 +303,7 @@ class WinMain():
                     total_gasto_estado += valor_total
                 
             gasto_total_periodo = dados_gasto_acul_total[-1]
-            
+
             fig, ax = plt.subplots()
             
             # Cria gráfico
