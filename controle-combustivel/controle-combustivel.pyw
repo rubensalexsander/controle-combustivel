@@ -164,7 +164,7 @@ def plan_generation(df_sheet, start_date, final_date):
     plan['Q2'] = final_date 
     
     # Salva planilha final
-    save_path = f"{install_path}/app/planilha-controle-combustível-{str(start_date.strftime('%m/%Y')).replace('/', '-')}a{str(final_date.strftime('%m/%Y')).replace('/', '-')}-{randint(1001,9999)}.xlsx"
+    save_path = f"{install_path}/app/planilha-controle-combustível-{str(start_date.strftime('%m/%Y')).replace('/', 'de')}-{randint(1001,9999)}.xlsx"
     arq.save(save_path)
 
 class WinMain():
