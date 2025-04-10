@@ -27,6 +27,3 @@ sheet_map = { #converted to python list (-1)
 # Standard plan sets -----------------------------------------------
 standard_plan_pag = 'plan1'
 standard_plan_range = 'A:K'
-
-# Other
-quant_day = {'01':'31','02':'28','03':'31','04':'30','05':'31','06':'30','07':'31','08':'31','09':'30','10':'31','11':'30','12':'31'}

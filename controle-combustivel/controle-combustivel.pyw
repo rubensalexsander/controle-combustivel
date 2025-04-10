@@ -1,6 +1,5 @@
 from __future__ import print_function
-import pickle
-import os.path
+import pickle, os.path, calendar
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
@@ -10,11 +9,11 @@ from openpyxl.styles import Alignment
 from openpyxl.utils import rows_from_range
 from random import randint
 from datetime import datetime
+from lib.arsqlite import *
+from configs import *
 import pandas as pd
 import tkinter as tk
 import tkinter.ttk as ttk
-from lib.arsqlite import *
-from configs import *
 import matplotlib.pyplot as plt
 
 def get_gsheet_data(start_date, final_date):
@@ -230,9 +229,12 @@ class WinMain():
             month = month_var.get()
             year = year_var.get()
             
+            # Retorna o número de dias do mês atual
+            _, dias_no_mes = calendar.monthrange(int(year), int(month))
+            
             # Datas
             start_date = datetime.strptime(f'01/{month}/{year} 00:00:00', '%d/%m/%Y %H:%M:%S')
-            final_date = datetime.strptime(f'{quant_day[month]}/{month}/{year} 23:59:59', '%d/%m/%Y %H:%M:%S')
+            final_date = datetime.strptime(f'{dias_no_mes}/{month}/{year} 23:59:59', '%d/%m/%Y %H:%M:%S')
             
             # Recupera dados da planilha
             query = get_gsheet_data(start_date, final_date)
@@ -330,6 +332,7 @@ class WinMain():
             fig.subplots_adjust(right=0.7, bottom=0.15)
             fig.canvas.manager.set_window_title(f"Análise Controle de Combustível {start_date.strftime('%m/%Y')}")
 
+            # Abre gráfico
             plt.show()
         
         bt_grafico = ttk.Button(frame_bts, image=photo_grafico, command=fazer_grafico, width=10)
@@ -352,11 +355,12 @@ class WinMain():
         else: current_month = str(datetime.now().month)
         
         month_var = tk.StringVar()
+        mounths = [str(i).zfill(2) for i in range(1, 13)]
         
         combo_mes = ttk.Combobox(frame_mes, textvariable=month_var, width=5)
         combo_mes.pack(side='left')
-        combo_mes['values'] = list(quant_day.keys())
-        combo_mes.current(list(quant_day.keys()).index(current_month))
+        combo_mes['values'] = mounths
+        combo_mes.current(mounths.index(current_month))
         
         year_var = tk.StringVar()
         frame_year = tk.Frame(frame_mes_ano)
@@ -381,9 +385,12 @@ class WinMain():
             month = month_var.get()
             year = year_var.get()
             
+            # Retorna o número de dias do mês atual
+            _, dias_no_mes = calendar.monthrange(int(year), int(month))
+            
             # Datas
             start_date = datetime.strptime(f'01/{month}/{year} 00:00:00', '%d/%m/%Y %H:%M:%S')
-            final_date = datetime.strptime(f'{quant_day[month]}/{month}/{year} 23:59:59', '%d/%m/%Y %H:%M:%S')
+            final_date = datetime.strptime(f'{dias_no_mes}/{month}/{year} 23:59:59', '%d/%m/%Y %H:%M:%S')
             
             query = get_gsheet_data(start_date, final_date)
             
