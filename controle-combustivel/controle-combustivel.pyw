@@ -241,26 +241,23 @@ class WinMain():
             
             # Manipula dados
             dados_data = []
-            total_gasto_etanol_val = 0
-            total_gasto_etanol_litragem = 0
-            total_gasto_gasolina_val = 0
-            total_gasto_gasolina_litragem = 0
-            total_gasto_diesel_val = 0
-            total_gasto_diesel_litragem = 0
             dados_gasto_acul_total = []
+            
+            total_gasto_etanol_litragem = 0
+            total_gasto_gasolina_litragem = 0
+            total_gasto_diesel_litragem = 0
             total_gasto_prefeitura = 0
             total_gasto_estado = 0
+            gasto_total = 0
             
-            # Valores combustiveis
             # Abrindo DB
             db_path = rf'{install_path}/db/db.db' 
             db = DbSqlite(local=db_path)
             
+            # Valores dos litros
             val_litro_etanol = db.get_instance(table='combustivel', key=['nome', 'Etanol'])[0][2]
             val_litro_gasolina = db.get_instance(table='combustivel', key=['nome', 'Gasolina'])[0][2]
             val_litro_diesel = db.get_instance(table='combustivel', key=['nome', 'Diesel'])[0][2]
-            
-            gasto_total = 0
             
             # Transforma litragem para gasto aculmulado em R$
             for index, row in query.iterrows():
@@ -276,39 +273,37 @@ class WinMain():
                     valor_total = litragem * val_litro_etanol
                     
                     # Adiciona às variáveis
-                    total_gasto_etanol_val += valor_total
                     total_gasto_etanol_litragem += litragem
+                    
                 elif combustivel == 'Gasolina':
                     # Total do abastecimento
                     valor_total = litragem * val_litro_gasolina
                     
                     # Adiciona às variáveis
-                    total_gasto_gasolina_val += valor_total
                     total_gasto_gasolina_litragem += litragem
+                    
                 elif combustivel == 'Diesel':
                     # Total do abastecimento
                     valor_total = litragem * val_litro_diesel
                     
                     # Adiciona às variáveis
-                    total_gasto_diesel_val += valor_total
                     total_gasto_diesel_litragem += litragem
                 
                 # Soma à variável de aculmulação
                 gasto_total += valor_total
                 
-                # Adiciona à serie temporal
-                dados_gasto_acul_total.append(gasto_total)
-                
+                # Adiciona o valor para prefeitura/estado
                 if origem == 'Prefeitura':
                     total_gasto_prefeitura += valor_total
                 elif origem == 'Estado':
                     total_gasto_estado += valor_total
                 
-            gasto_total_periodo = dados_gasto_acul_total[-1]
-
+                # Adiciona à serie temporal
+                dados_gasto_acul_total.append(gasto_total)
+                
+            # Cria gráfico
             fig, ax = plt.subplots()
             
-            # Cria gráfico
             ax.plot(dados_data, dados_gasto_acul_total, color='blue', marker='o', linestyle='--')
             plt.setp(ax.get_xticklabels(), rotation=55, fontsize=8)
             ax.set_title(f"Gasto de combusível {start_date.strftime('%d/%m')} a {dados_data[-1]}")
@@ -325,7 +320,7 @@ class WinMain():
             string += f'Gastos Prefeitura: R${total_gasto_prefeitura:.2f}\n'.replace('.', ',')
             string += f'Gastos Estado: R${total_gasto_estado:.2f}\n'.replace('.', ',')
             string += f'\n\n\n'
-            string += f'Gasto Total: R${gasto_total_periodo:.2f}\n'.replace('.', ',')
+            string += f'Gasto Total: R${dados_gasto_acul_total[-1]:.2f}\n'.replace('.', ',')
             
             # Escreve informações ao lado do gráfico
             fig.text(0.72, 0.65, string, fontsize=8, ha='left', va='center')
