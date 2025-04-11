@@ -54,5 +54,7 @@ Sistema desenvolvido para **atividade extensionista do curso de Ciências da Com
 ![Screenshot from 2025-04-10 16-01-23](https://github.com/user-attachments/assets/a6296675-d4c4-4a8c-b711-ec54767aba79)
 
 # Relatório mensal (gerado pelo aplicativo):
+(**Dados fictícios** ⚠️)
+![Captura de tela 2025-04-11 001916](https://github.com/user-attachments/assets/4c478494-53ff-49cf-9cd2-31b3860cb905)
 
 
