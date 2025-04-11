@@ -1,5 +1,5 @@
 # App sets ------------------------------------------------------
-install_path = r'/home/alex/Documents/dev/repositorios/controle-combustivel-public/controle-combustivel'
+install_path = r'/home/alex/Documents/dev/repositorios/controle-combustivel/controle-combustivel'
 cia_name = 'Delegacia A - Cidade exemplo'
 resolution = [380, 285]
 
