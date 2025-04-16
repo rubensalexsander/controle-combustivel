@@ -512,9 +512,110 @@ class WinConfig():
             # Close win
             self.finish()
         
+        # Test treeview
+        colunas = ['prefixo', 'placa', 'Reserva']
+        
+        '''tree = ttk.Treeview(frame, columns=colunas, show='headings')
+        
+        # Função para carregar dados da tabela para a Treeview
+        def carregar_dados():
+            #for item in tree.get_children():
+            #    tree.delete(item)
+
+            table_viaturas = db.get_table(tabela='viaturas')
+            
+            for row in table_viaturas:
+                tree.insert("", "end", values=row)
+        
+        carregar_dados()
+        
+        for col in colunas:
+            tree.heading(col, text=col)
+        
+        tree.pack()'''
+        
+        colunas = ("Prefixo", "Placa", "Res")
+        tree = ttk.Treeview(frame, columns=colunas, show='headings', height=2)
+        tree.pack()
+        
+        # Função para inserir novo registro
+        def inserir_dado():
+            prefixo = entry_prefixo.get()
+            placa = entry_placa.get()
+            res = entry_res.get()
+            if prefixo and placa and res:
+                print(f'dados inseridos: {prefixo}, {placa}, {res}')
+                carregar_dados()
+                limpar_campos()
+
+        # Função para carregar os dados no Treeview
+        def carregar_dados():
+            #for item in tree.get_children():
+            #    tree.delete(item)
+
+            table_viaturas = db.get_table(tabela='viaturas')
+            
+            for row in table_viaturas:
+                tree.insert("", "end", values=row)
+
+        # Preenche os campos com os dados selecionados na tabela
+        def selecionar_linha(event):
+            item = tree.selection()
+            if item:
+                valores = tree.item(item[0])['values']
+                entry_prefixo.delete(0, tk.END)
+                entry_prefixo.insert(0, valores[0])
+                entry_placa.delete(0, tk.END)
+                entry_placa.insert(0, valores[1])
+                entry_res.delete(0, tk.END)
+                entry_res.insert(0, valores[2])
+
+        # Atualiza o registro no banco
+        def atualizar_dado():
+            prefixo = entry_prefixo.get()
+            placa = entry_placa.get()
+            res = entry_res.get()
+            if prefixo and placa and res:
+                print(f'Atualiza no db: {prefixo}, {placa}, {res}')
+                carregar_dados()
+                limpar_campos()
+
+        # Limpa os campos de entrada
+        def limpar_campos():
+            entry_prefixo.delete(0, tk.END)
+            entry_placa.delete(0, tk.END)
+            entry_res.delete(0, tk.END)
+
+        frame_entrys = ttk.Frame(frame)
+        frame_entrys.pack(padx=10, pady=10)
+        
+        # Campos de entrada
+        tk.Label(frame_entrys, text="Prefixo:").pack(side='left')
+        entry_prefixo = tk.Entry(frame_entrys, width=8)
+        entry_prefixo.pack(side='left')
+
+        tk.Label(frame_entrys, text="Placa:").pack(side='left')
+        entry_placa = tk.Entry(frame_entrys, width=8)
+        entry_placa.pack(side='left')
+
+        tk.Label(frame_entrys, text="Res:").pack(side='left')
+        entry_res = tk.Entry(frame_entrys, width=8)
+        entry_res.pack(side='left')
+
+        tk.Button(frame, text="Inserir", command=inserir_dado).pack(pady=5)
+        tk.Button(frame, text="Atualizar", command=atualizar_dado).pack(pady=5)
+
+        for col in colunas:
+            tree.heading(col, text=col)
+            tree.column(col, width=80)
+
+        tree.bind("<<TreeviewSelect>>", selecionar_linha)
+
+        carregar_dados()
+        
         # bt salvar
         bt_salvar = ttk.Button(frame, text='Salvar', command=salvar)
-        bt_salvar.pack(anchor='s', pady=[20,0]) 
+        bt_salvar.pack(anchor='s', pady=[20,0])
 
 if __name__ == '__main__':
     win_main = WinMain(resolution=resolution)
