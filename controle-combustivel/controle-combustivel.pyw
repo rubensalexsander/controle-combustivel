@@ -14,6 +14,7 @@ from configs import *
 import pandas as pd
 import tkinter as tk
 import tkinter.ttk as ttk
+from tkinter import filedialog
 import matplotlib.pyplot as plt
 
 def get_gsheet_data(start_date, final_date):
@@ -160,10 +161,13 @@ def plan_generation(df_sheet, start_date, final_date):
     
     # Adiciona datas
     plan['P2'] = start_date
-    plan['Q2'] = final_date 
+    plan['Q2'] = final_date
+    
+    # Define o local de salvamento
+    dir_save = filedialog.askdirectory(title="Selecione uma pasta")
+    save_path = f"{dir_save}/planilha-combustível-{str(start_date.strftime('%m/%Y')).replace('/', 'de')}-{randint(1001,9999)}.xlsx"
     
     # Salva planilha final
-    save_path = f"{install_path}/app/planilha-controle-combustível-{str(start_date.strftime('%m/%Y')).replace('/', 'de')}-{randint(1001,9999)}.xlsx"
     arq.save(save_path)
 
 class WinMain():
