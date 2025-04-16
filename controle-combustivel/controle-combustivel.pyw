@@ -167,8 +167,17 @@ def plan_generation(df_sheet, start_date, final_date):
     dir_save = filedialog.askdirectory(title="Selecione uma pasta")
     save_path = f"{dir_save}/planilha-combustível-{str(start_date.strftime('%m/%Y')).replace('/', 'de')}-{randint(1001,9999)}.xlsx"
     
-    # Salva planilha final
-    arq.save(save_path)
+    try:
+        if len(dir_save):
+            # Salva planilha final
+            arq.save(save_path)
+            
+            # Retorna mensagem
+            return f'Planilha salva em: \n{dir_save}'
+        else:
+            return ''
+    except:
+            return "Erro ao salvar"
 
 class WinMain():
     def __init__(self, resolution=[400, 300], title='Controle Combustível'):
@@ -391,14 +400,19 @@ class WinMain():
             start_date = datetime.strptime(f'01/{month}/{year} 00:00:00', '%d/%m/%Y %H:%M:%S')
             final_date = datetime.strptime(f'{dias_no_mes}/{month}/{year} 23:59:59', '%d/%m/%Y %H:%M:%S')
             
+            mensagem = 'Gerando planilha.'
+            
+            print(mensagem)
+            
             query = get_gsheet_data(start_date, final_date)
             
-            tx_mensagem['text'] = 'Gerando planilha.'
+            tx_mensagem['text'] = mensagem
             win_main.win.update()
             
-            plan_generation(query, start_date, final_date)
+            mensagem = plan_generation(query, start_date, final_date)
             
-            tx_mensagem['text'] = 'Planilha gerada.'
+            tx_mensagem['text'] = mensagem
+            print(mensagem)
             win_main.win.update()
         
         bt_confirmar = ttk.Button(frame, text='Confirmar', command=fazer_planilha)
