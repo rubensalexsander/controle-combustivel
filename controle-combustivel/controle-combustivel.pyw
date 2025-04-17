@@ -107,7 +107,15 @@ def plan_generation(df_sheet, start_date, final_date):
         combustivel = row[sheet_map['combustivel']]
         origem = row[sheet_map['origem']]
         
-        if prefixo in list(vps_dict_copy.keys()):
+        # Verifica se a VP está no db
+        prefixo_no_db = False
+        
+        for i in list(vps_dict_copy.keys()):
+            if i in prefixo:
+                prefixo_no_db = True
+                prefixo = i
+        
+        if prefixo_no_db:
             placa = vps_dict_copy[prefixo][0]
             y_val = int(vps_dict_copy[prefixo][1])
             vps_dict_copy[prefixo][1] += 1
