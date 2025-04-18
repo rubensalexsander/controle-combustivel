@@ -241,7 +241,7 @@ class WinMain():
         tx_cia_name.pack(padx=8, anchor='w')
         
         frame_bts = tk.Frame(frame_title_bt)
-        frame_bts.pack(fill='x', padx=5, side=tk.RIGHT)
+        frame_bts.pack(fill='x', padx=0, side=tk.RIGHT)
         
         bt_configurar = ttk.Button(frame_bts, image=photo, command=self.open_config, width=10)
         bt_configurar.pack(pady=[5, 0], side=tk.TOP)
