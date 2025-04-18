@@ -2,7 +2,7 @@
 install_path = r'/home/alex/Documents/dev/repositorios/controle-combustivel/controle-combustivel'
 cia_name = 'Delegacia A - Cidade exemplo'
 resolution = [380, 285]
-resolution = [600, 400]
+resolution = [450, 300]
 
 # VPs sets ------------------------------------------------------
 vps_dict = {

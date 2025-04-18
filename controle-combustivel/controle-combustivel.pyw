@@ -8,7 +8,7 @@ from openpyxl.styles.borders import Border, Side
 from openpyxl.styles import Alignment
 from openpyxl.utils import rows_from_range
 from random import randint
-from datetime import datetime
+from datetime import datetime, date
 from lib.arsqlite import *
 from configs import *
 import pandas as pd
@@ -16,6 +16,7 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from tkinter import filedialog
 import matplotlib.pyplot as plt
+from tkcalendar import DateEntry
 
 def get_gsheet_data(start_date, final_date):
     ''' Buscando dados de planilha Google Sheets usando o Sheets API '''
@@ -246,16 +247,9 @@ class WinMain():
         bt_configurar.pack(pady=[5, 0], side=tk.TOP)
         
         def fazer_grafico():
-            # Pega mês e ano
-            month = month_var.get()
-            year = year_var.get()
-            
-            # Retorna o número de dias do mês atual
-            _, dias_no_mes = calendar.monthrange(int(year), int(month))
-            
             # Datas
-            start_date = datetime.strptime(f'01/{month}/{year} 00:00:00', '%d/%m/%Y %H:%M:%S')
-            final_date = datetime.strptime(f'{dias_no_mes}/{month}/{year} 23:59:59', '%d/%m/%Y %H:%M:%S')
+            start_date = datetime.strptime(f'{date_entry_inicio.get()} 00:00:00', '%d/%m/%Y %H:%M:%S')
+            final_date = datetime.strptime(f'{date_entry_fim.get()} 23:59:59', '%d/%m/%Y %H:%M:%S')
             
             # Recupera dados da planilha
             query = get_gsheet_data(start_date, final_date)
@@ -346,7 +340,7 @@ class WinMain():
             fig.text(0.72, 0.5, string, fontsize=8, ha='left', va='center')
             fig.text(0.72, 0.3, f'Gasto Total: R${dados_gasto_acul_total[-1]:.2f}\n'.replace('.', ','), fontsize=8, fontweight='bold', ha='left', va='center')
             fig.subplots_adjust(right=0.7, bottom=0.15)
-            fig.canvas.manager.set_window_title(f"Análise Controle de Combustível {start_date.strftime('%m/%Y')}")
+            fig.canvas.manager.set_window_title(f"Análise dos gastos de Combustível")
 
             # Abre gráfico
             plt.show()
@@ -357,39 +351,43 @@ class WinMain():
         frame = tk.Frame(self.win)
         frame.pack(fill='both', padx=10)
         
-        frame_mes_ano = tk.Frame(frame)
-        frame_mes_ano.pack(padx=10, pady=5)
+        frame_datas = tk.Frame(frame)
+        frame_datas.pack(padx=10, pady=5)
         
-        frame_mes = tk.Frame(frame_mes_ano)
-        frame_mes.pack(anchor='w', pady=[0, 5])
-        tx_mes = tk.Label(frame_mes, text='Mês: ')
-        tx_mes.pack(side='left')
+        # Data de início
+        frame_data_inicio = tk.Frame(frame_datas)
+        frame_data_inicio.pack(anchor='e', pady=[0, 5])
         
-        current_year = str(datetime.now().year)
+        date_entry_inicio = DateEntry(frame_data_inicio, 
+                                      width=12, 
+                                      background='darkblue', 
+                                      borderwidth=1, 
+                                      date_pattern='dd/mm/yyyy', 
+                                      firstweekday='sunday', 
+                                      showweeknumbers=False, 
+                                      locale='pt_BR')
         
-        if len(str(datetime.now().month)) == 1: current_month = '0' + str(datetime.now().month)
-        else: current_month = str(datetime.now().month)
+        date_entry_inicio.pack(side='right')
         
-        month_var = tk.StringVar()
-        mounths = [str(i).zfill(2) for i in range(1, 13)]
+        tx_data_inicio = tk.Label(frame_data_inicio, text='De: ')
+        tx_data_inicio.pack(side='right')
         
-        combo_mes = ttk.Combobox(frame_mes, textvariable=month_var, width=5)
-        combo_mes.pack(side='left')
-        combo_mes['values'] = mounths
-        combo_mes.current(mounths.index(current_month))
+        # Data de fim
+        frame_data_fim = tk.Frame(frame_datas)
+        frame_data_fim.pack(anchor='e')
         
-        year_var = tk.StringVar()
-        frame_year = tk.Frame(frame_mes_ano)
-        frame_year.pack(anchor='w')
-        tx_year = tk.Label(frame_year, text='Ano: ')
-        tx_year.pack(side='left')
+        date_entry_fim = DateEntry(frame_data_fim, 
+                                   width=12, 
+                                   background='darkblue', 
+                                   borderwidth=1, 
+                                   date_pattern='dd/mm/yyyy', 
+                                   showweeknumbers=False, 
+                                   locale='pt_BR')
         
-        combo_years = [str(i) for i in range(2025, 2051)]
+        date_entry_fim.pack(side='right')
         
-        combo_year = ttk.Combobox(frame_year, textvariable=year_var, width=8)
-        combo_year.pack(side='left')
-        combo_year['values'] = combo_years
-        combo_year.current(combo_years.index(current_year))
+        tx_data_fim = tk.Label(frame_data_fim, text='Até: ')
+        tx_data_fim.pack(side='right')
         
         tx_mensagem_var = tk.StringVar()
         tx_mensagem_var.set(value='')
@@ -398,15 +396,9 @@ class WinMain():
             tx_mensagem['text'] = 'Buscando dados da planilha Google.'
             win_main.win.update()
             
-            month = month_var.get()
-            year = year_var.get()
-            
-            # Retorna o número de dias do mês atual
-            _, dias_no_mes = calendar.monthrange(int(year), int(month))
-            
             # Datas
-            start_date = datetime.strptime(f'01/{month}/{year} 00:00:00', '%d/%m/%Y %H:%M:%S')
-            final_date = datetime.strptime(f'{dias_no_mes}/{month}/{year} 23:59:59', '%d/%m/%Y %H:%M:%S')
+            start_date = datetime.strptime(f'{date_entry_inicio.get()} 00:00:00', '%d/%m/%Y %H:%M:%S')
+            final_date = datetime.strptime(f'{date_entry_fim.get()} 23:59:59', '%d/%m/%Y %H:%M:%S')
             
             mensagem = 'Gerando planilha.'
             
@@ -428,6 +420,21 @@ class WinMain():
         
         tx_mensagem = tk.Label(frame)
         tx_mensagem.pack(pady=5)
+        
+        # Define datas dos date_entry
+        mes_atual = datetime.now().month
+        ano_atual = datetime.now().year
+        
+        # Retorna o número de dias do mês atual
+        _, dias_no_mes = calendar.monthrange(int(ano_atual), int(mes_atual))
+        
+        # Define a data inicial date_entry_inicio
+        data_inicial_inicio = date(ano_atual, mes_atual, 1)
+        date_entry_inicio.set_date(data_inicial_inicio)
+        
+        # Define a data inicial date_entry_fim
+        data_inicial_fim = date(ano_atual, mes_atual, dias_no_mes)
+        date_entry_fim.set_date(data_inicial_fim)
 
 class WinConfig():
     def __init__(self, resolution=[320, 240], title='win1'):
