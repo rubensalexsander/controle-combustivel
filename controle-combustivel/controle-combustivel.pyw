@@ -234,7 +234,7 @@ class WinMain():
         frame_title = tk.Frame(frame_title_bt)
         frame_title.pack(fill='x', padx=5, pady=[0, 5], side=tk.LEFT, anchor='nw')
         
-        tx_mensagem = tk.Label(frame_title, text='Gerar planilha abastecimento', font=['arial', 14])
+        tx_mensagem = tk.Label(frame_title, text='Gerar planilha Controle de Combustível', font=['arial', 14])
         tx_mensagem.pack(padx=5, pady=[15, 0], anchor='w')
         
         tx_cia_name = tk.Label(frame_title, text=f'{cia_name}', font=['arial', 11])
