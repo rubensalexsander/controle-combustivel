@@ -5,7 +5,7 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from openpyxl import load_workbook
 from openpyxl.styles.borders import Border, Side
-from openpyxl.styles import Alignment
+from openpyxl.styles import Alignment, PatternFill, Font
 from openpyxl.utils import rows_from_range
 from random import randint
 from datetime import datetime, date
@@ -99,11 +99,84 @@ def plan_generation(df_sheet, start_date, final_date):
     # Abrindo DB
     db = DbSqlite(local=db_path)
     
+    # Formatações iniciais
+    fill_cinza = PatternFill(fill_type="solid", fgColor="cccccc")
+    fill_amarelo = PatternFill(fill_type="solid", fgColor="ffff00")
+    
+    # Fontes
+    fonte14 = Font(size=14)
+    fonte12 = Font(size=12)
+    
+    # Bordas
+    full_border = Border(left=Side(style='thin'), right=Side(style='thin'), top=Side(style='thin'), bottom=Side(style='thin'))
+
+    # Definir alinhamento (horizontal e vertical centralizado)
+    alinhamentocc = Alignment(horizontal='center', vertical='center')
+    
+    # Adiciona nome da cia/destacamento e título
+    plan[f'A1'] = cia_name
+    plan['A1'].fill = fill_cinza
+    plan['A1'].font = fonte14
+    plan['A1'].alignment = alinhamentocc
+    plan.merge_cells('A1:K1')
+    
+    vps_dict = {}
+    var_controle = 5
+    
+    def vps_a_planilha(prefixo):
+        # Adiciona valores e formatação à planilha
+        # Adiciona nome da cia/destacamento e título
+        if prefixo == 'Outros': tx_vp = prefixo
+        else:
+            tx_vp = f'VP {prefixo} -  RESERVA:  SIM( )  NÃO (X)'
+            
+        plan[f'A{var_controle-2}'] = tx_vp
+        plan[f'A{var_controle-2}'].fill = fill_amarelo
+        plan[f'A{var_controle-2}'].font = fonte14
+        plan[f'A{var_controle-2}'].alignment = alinhamentocc
+        plan[f'A{var_controle-2}'].border = full_border
+
+        
+        # Adiciona nome das colunas: PMMG	PLACA	COD	DATA	HORA	SEQ.	KM	COMB.	QUANT.	 VALOR UN. 	VALOR TOT.
+        
+        plan[f'A{var_controle-1}'] = 'PMMG'
+        plan[f'B{var_controle-1}'] = 'PLACA'
+        plan[f'C{var_controle-1}'] = 'COD'
+        plan[f'D{var_controle-1}'] = 'DATA'
+        plan[f'E{var_controle-1}'] = 'HORA'
+        plan[f'F{var_controle-1}'] = 'SEQ.'
+        plan[f'G{var_controle-1}'] = 'KM'
+        plan[f'H{var_controle-1}'] = 'COMB.'
+        plan[f'I{var_controle-1}'] = 'QUANT.'
+        plan[f'J{var_controle-1}'] = 'VALOR UN.'
+        plan[f'K{var_controle-1}'] = 'VALOR TOT.'
+        
+        for row in rows_from_range(f'A{var_controle-1}:K{var_controle-1}'):
+            for cell in row:
+                plan[cell].fill = fill_cinza
+                plan[cell].font = fonte12
+                plan[cell].alignment = alinhamentocc
+                plan[cell].border = full_border
+                
+    # Adiciona dados para nova viatura
+    for i in db.get_table(tabela='viaturas'):
+        prefixo = i[0]
+        placa = i[1]
+        res = i[2]
+        
+        # Adiciona viatura ao vps_dict
+        vps_dict[prefixo] = [placa, var_controle]
+        
+        
+        vps_a_planilha(prefixo)
+        
+        var_controle += 2
+    
+    vps_a_planilha('Outros')
+    vps_dict['outros'] = ['', var_controle]
+    
     # Cria cópia para trabalhar nessa geração da planilha
     vps_dict_copy = {i: vps_dict[i][:] for i in list(vps_dict.keys())}
-    
-    # Adiciona nome da cia/destacamento
-    plan[f'A1'] = cia_name
     
     # Iterando sob o df
     for index, row in df_sheet.iterrows():
@@ -179,6 +252,14 @@ def plan_generation(df_sheet, start_date, final_date):
     # Adiciona datas
     plan['P2'] = start_date
     plan['Q2'] = final_date
+    
+    # Faz merge nas células
+    # Faz a primeira (sempre)
+    plan.merge_cells(f'A3:K3')
+    
+    for key, val in vps_dict_copy.items():
+        to_merge = val[1]
+        plan.merge_cells(f'A{to_merge}:K{to_merge}')
     
     # Define o local de salvamento
     dir_save = filedialog.askdirectory(title="Selecione uma pasta")
