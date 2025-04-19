@@ -51,10 +51,18 @@ def get_gsheet_data(start_date, final_date):
     service = build('sheets', 'v4', credentials=creds)
 
     # Call the Sheets API
-    sheet = service.spreadsheets()
-    result = sheet.values().get(spreadsheetId=spread_sheet_id, range=pag_range).execute()
-    values = result.get('values', [])
+    sheet = service.spreadsheets().values().get(spreadsheetId=spread_sheet_id, range=pag_range).execute()
+    values = sheet.get('values', [])
     
+    # Faz a requisição para pegar os metadados
+    spreadsheet = service.spreadsheets().get(spreadsheetId=spread_sheet_id).execute()
+
+    # Pega os nomes das abas
+    sheet_names = [sheet['properties']['title'] for sheet in spreadsheet['sheets']]
+
+    # Prita nome das páginas
+    print(sheet_names)
+
     # Tratando dados da planilha google
     df_sheet = pd.DataFrame(values)
     df_sheet = df_sheet.drop(0)
