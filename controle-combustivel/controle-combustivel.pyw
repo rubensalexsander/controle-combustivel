@@ -124,21 +124,18 @@ def plan_generation(df_sheet, start_date, final_date):
     var_controle = 5
     
     def vps_a_planilha(prefixo):
-        # Adiciona valores e formatação à planilha
         # Adiciona nome da cia/destacamento e título
         if prefixo == 'Outros': tx_vp = prefixo
         else:
-            tx_vp = f'VP {prefixo} -  RESERVA:  SIM( )  NÃO (X)'
+            tx_vp = f'VP{prefixo} - RESERVA: SIM( )  NÃO(X)'
             
         plan[f'A{var_controle-2}'] = tx_vp
         plan[f'A{var_controle-2}'].fill = fill_amarelo
         plan[f'A{var_controle-2}'].font = fonte14
         plan[f'A{var_controle-2}'].alignment = alinhamentocc
         plan[f'A{var_controle-2}'].border = full_border
-
         
         # Adiciona nome das colunas: PMMG	PLACA	COD	DATA	HORA	SEQ.	KM	COMB.	QUANT.	 VALOR UN. 	VALOR TOT.
-        
         plan[f'A{var_controle-1}'] = 'PMMG'
         plan[f'B{var_controle-1}'] = 'PLACA'
         plan[f'C{var_controle-1}'] = 'COD'
@@ -167,7 +164,6 @@ def plan_generation(df_sheet, start_date, final_date):
         # Adiciona viatura ao vps_dict
         vps_dict[prefixo] = [placa, var_controle]
         
-        
         vps_a_planilha(prefixo)
         
         var_controle += 2
@@ -191,7 +187,6 @@ def plan_generation(df_sheet, start_date, final_date):
         
         # Verifica se a VP está no db
         prefixo_no_db = False
-        
         for i in list(vps_dict_copy.keys()):
             if i in prefixo:
                 prefixo_no_db = True
@@ -253,9 +248,9 @@ def plan_generation(df_sheet, start_date, final_date):
     plan['P2'] = start_date
     plan['Q2'] = final_date
     
-    # Faz merge nas células
-    # Faz a primeira (sempre)
+    # Mescla células
     plan.merge_cells(f'A3:K3')
+    del vps_dict_copy['outros']
     
     for key, val in vps_dict_copy.items():
         to_merge = val[1]
@@ -275,7 +270,7 @@ def plan_generation(df_sheet, start_date, final_date):
         else:
             return ''
     except:
-            return "Erro ao salvar"
+        return "Erro ao salvar"
 
 class WinMain():
     def __init__(self, resolution=[400, 300], title='Controle Combustível'):
@@ -617,27 +612,6 @@ class WinConfig():
             self.finish()
         
         # Test treeview
-        colunas = ['prefixo', 'placa', 'Reserva']
-        
-        '''tree = ttk.Treeview(frame, columns=colunas, show='headings')
-        
-        # Função para carregar dados da tabela para a Treeview
-        def carregar_dados():
-            #for item in tree.get_children():
-            #    tree.delete(item)
-
-            table_viaturas = db.get_table(tabela='viaturas')
-            
-            for row in table_viaturas:
-                tree.insert("", "end", values=row)
-        
-        carregar_dados()
-        
-        for col in colunas:
-            tree.heading(col, text=col)
-        
-        tree.pack()'''
-        
         colunas = ("Prefixo", "Placa", "Res")
         tree = ttk.Treeview(frame, columns=colunas, show='headings', height=2)
         tree.pack()
@@ -654,9 +628,6 @@ class WinConfig():
 
         # Função para carregar os dados no Treeview
         def carregar_dados():
-            #for item in tree.get_children():
-            #    tree.delete(item)
-
             table_viaturas = db.get_table(tabela='viaturas')
             
             for row in table_viaturas:
