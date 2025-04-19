@@ -235,10 +235,10 @@ class WinMain():
         frame_title.pack(fill='x', padx=5, pady=[0, 5], side=tk.LEFT, anchor='nw')
         
         tx_mensagem = tk.Label(frame_title, text='Gerar planilha Controle de Combustível', font=['arial', 14])
-        tx_mensagem.pack(padx=5, pady=[15, 0], anchor='w')
+        tx_mensagem.pack(padx=0, pady=[15, 0], anchor='w')
         
         tx_cia_name = tk.Label(frame_title, text=f'{cia_name}', font=['arial', 11])
-        tx_cia_name.pack(padx=8, anchor='w')
+        tx_cia_name.pack(padx=2, anchor='w')
         
         frame_bts = tk.Frame(frame_title_bt)
         frame_bts.pack(fill='x', padx=0, side=tk.RIGHT)
@@ -356,7 +356,7 @@ class WinMain():
         
         # Data de início
         frame_data_inicio = tk.Frame(frame_datas)
-        frame_data_inicio.pack(anchor='e', pady=[0, 5])
+        frame_data_inicio.pack(anchor='e', padx=[0, 30], pady=[0, 5])
         
         date_entry_inicio = DateEntry(frame_data_inicio, 
                                       width=12, 
@@ -374,7 +374,7 @@ class WinMain():
         
         # Data de fim
         frame_data_fim = tk.Frame(frame_datas)
-        frame_data_fim.pack(anchor='e')
+        frame_data_fim.pack(anchor='e', padx=[0, 30])
         
         date_entry_fim = DateEntry(frame_data_fim, 
                                    width=12, 
