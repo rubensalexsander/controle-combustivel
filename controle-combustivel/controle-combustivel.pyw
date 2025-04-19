@@ -246,7 +246,7 @@ def plan_generation(df_sheet, start_date, final_date):
     
     # Adiciona datas
     plan['P2'] = start_date
-    plan['Q2'] = final_date
+    plan['Q2'] = final_date.strftime('%d/%m/%Y')
     
     # Mescla células
     plan.merge_cells(f'A3:K3')
@@ -370,21 +370,18 @@ class WinMain():
                 if combustivel == 'Etanol':
                     # Total do abastecimento
                     valor_total = litragem * val_litro_etanol
-                    
                     # Adiciona às variáveis
                     total_gasto_etanol_litragem += litragem
                     
                 elif combustivel == 'Gasolina':
                     # Total do abastecimento
                     valor_total = litragem * val_litro_gasolina
-                    
                     # Adiciona às variáveis
                     total_gasto_gasolina_litragem += litragem
                     
                 elif combustivel == 'Diesel':
                     # Total do abastecimento
                     valor_total = litragem * val_litro_diesel
-                    
                     # Adiciona às variáveis
                     total_gasto_diesel_litragem += litragem
                 
