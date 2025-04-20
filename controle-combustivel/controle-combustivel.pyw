@@ -500,7 +500,7 @@ class WinMain():
             win_main.win.update()
         
         bt_confirmar = ttk.Button(frame, text='Confirmar', command=fazer_planilha)
-        bt_confirmar.pack(pady=[10, 5])
+        bt_confirmar.pack(pady=10)
         
         tx_mensagem = tk.Label(frame)
         tx_mensagem.pack(pady=5)
@@ -559,7 +559,7 @@ class WinConfig():
         frame.pack(padx=10)
         
         tx_config = ttk.Label(frame, text='Configurações', font=['arial', 12])
-        tx_config.pack(pady=10)
+        tx_config.pack(pady=5)
         
         # Abrindo DB
         db_path = rf'{install_path}/db/db.db'
@@ -567,8 +567,8 @@ class WinConfig():
         
         # Combustíveis
         # Label Frame valores
-        lb_frame_valores =tk.LabelFrame(frame, text=f'Valor de litros', font=font_text_bold)
-        lb_frame_valores.pack(anchor='n', padx=30, pady=(0, 5), ipadx=10)
+        lb_frame_valores =tk.LabelFrame(frame, text=f' Valor de litros ', font=font_text_bold)
+        lb_frame_valores.pack(anchor='n', padx=30, ipadx=10)
         
         frame_litros = ttk.Frame(lb_frame_valores)
         frame_litros.pack()
@@ -577,7 +577,7 @@ class WinConfig():
         current_etanol = str(db.get_instance(table='combustivel', key=['nome', 'Etanol'])[0][2]).replace('.', ',')
         
         frame_etanol = ttk.Frame(frame_litros)
-        frame_etanol.pack(padx=30, pady=[0, 5], anchor='ne')
+        frame_etanol.pack(padx=30, pady=[0, 3], anchor='ne')
         
         tx_etanol = ttk.Label(frame_etanol, text='Etanol: R$')
         tx_etanol.pack(side=tk.LEFT)
@@ -590,7 +590,7 @@ class WinConfig():
         current_gasolina = str(db.get_instance(table='combustivel', key=['nome', 'Gasolina'])[0][2]).replace('.', ',')
         
         frame_gasolina = ttk.Frame(frame_litros)
-        frame_gasolina.pack(padx=30, pady=[0, 5], anchor='ne')
+        frame_gasolina.pack(padx=30, pady=[0, 3], anchor='ne')
         
         tx_gasolina = ttk.Label(frame_gasolina, text='Gasolina: R$')
         tx_gasolina.pack(side=tk.LEFT)
@@ -603,7 +603,7 @@ class WinConfig():
         current_diesel = str(db.get_instance(table='combustivel', key=['nome', 'Diesel'])[0][2]).replace('.', ',')
         
         frame_diesel = ttk.Frame(frame_litros)
-        frame_diesel.pack(padx=30, pady=[0, 5], anchor='ne')
+        frame_diesel.pack(padx=30, pady=[0, 3], anchor='ne')
         
         tx_diesel = ttk.Label(frame_diesel, text='Diesel: R$')
         tx_diesel.pack(side=tk.LEFT)
@@ -626,9 +626,13 @@ class WinConfig():
             # Close win
             self.finish()
         
+        # Label Frame veículos
+        lb_frame_veiculos =tk.LabelFrame(frame, text=f' Veículos ', font=font_text_bold)
+        lb_frame_veiculos.pack(anchor='n', padx=30, ipadx=10)
+        
         # Test treeview
         colunas = ("Prefixo", "Placa", "Reserva")
-        tree = ttk.Treeview(frame, columns=colunas, show='headings', height=1)
+        tree = ttk.Treeview(lb_frame_veiculos, columns=colunas, show='headings', height=1)
         tree.pack()
         
         # Função para inserir/alterar registro
@@ -696,7 +700,7 @@ class WinConfig():
             entry_placa.delete(0, tk.END)
             entry_res.delete(0, tk.END)
 
-        frame_entrys = ttk.Frame(frame)
+        frame_entrys = ttk.Frame(lb_frame_veiculos)
         frame_entrys.pack(padx=10, pady=5)
         
         # Campos de entrada
@@ -713,17 +717,17 @@ class WinConfig():
         entry_res.pack(side='left')
         
         # Botões
-        frame_bts = ttk.Frame(frame)
+        frame_bts = ttk.Frame(lb_frame_veiculos)
         frame_bts.pack(padx=10, pady=5)
         
         ttk.Button(frame_bts, text="Excluir", command=excluir_dado).pack(padx=5, side='left')
         ttk.Button(frame_bts, text="Inserir", command=inserir_dado).pack(padx=5, side='left')
         
-        ttk.Button(frame, text="Salvar", command=salvar, width=8).pack(padx=10, pady=5)
+        ttk.Button(frame, text="Salvar", command=salvar, width=8).pack(padx=10, pady=10)
 
         for col in colunas:
             tree.heading(col, text=col)
-            tree.column(col, width=80)
+            tree.column(col, anchor='center', width=80)
 
         tree.bind("<<TreeviewSelect>>", selecionar_linha)
 
