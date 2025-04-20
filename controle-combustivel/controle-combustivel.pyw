@@ -716,10 +716,10 @@ class WinConfig():
         frame_bts = ttk.Frame(frame)
         frame_bts.pack(padx=10, pady=5)
         
-        tk.Button(frame_bts, text="Excluir", command=excluir_dado).pack(padx=5, side='left')
-        tk.Button(frame_bts, text="Inserir", command=inserir_dado).pack(padx=5, side='left')
+        ttk.Button(frame_bts, text="Excluir", command=excluir_dado).pack(padx=5, side='left')
+        ttk.Button(frame_bts, text="Inserir", command=inserir_dado).pack(padx=5, side='left')
         
-        tk.Button(frame, text="Salvar", command=salvar, width=8).pack(padx=10, pady=5)
+        ttk.Button(frame, text="Salvar", command=salvar, width=8).pack(padx=10, pady=5)
 
         for col in colunas:
             tree.heading(col, text=col)
