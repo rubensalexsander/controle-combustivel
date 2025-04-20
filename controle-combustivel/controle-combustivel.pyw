@@ -123,11 +123,14 @@ def plan_generation(df_sheet, start_date, final_date):
     vps_dict = {}
     var_controle = 5
     
-    def vps_a_planilha(prefixo):
+    def vps_a_planilha(prefixo, res='Não'):
         # Adiciona nome da cia/destacamento e título
         if prefixo == 'Outros': tx_vp = prefixo
         else:
-            tx_vp = f'VP{prefixo} - RESERVA: SIM( )  NÃO(X)'
+            if res.lower() == 'sim':
+                tx_vp = f'VP{prefixo} - RESERVA: SIM(X)  NÃO( )'
+            else:
+                tx_vp = f'VP{prefixo} - RESERVA: SIM( )  NÃO(X)'
             
         plan[f'A{var_controle-2}'] = tx_vp
         plan[f'A{var_controle-2}'].fill = fill_amarelo
@@ -164,7 +167,7 @@ def plan_generation(df_sheet, start_date, final_date):
         # Adiciona viatura ao vps_dict
         vps_dict[prefixo] = [placa, var_controle]
         
-        vps_a_planilha(prefixo)
+        vps_a_planilha(prefixo, res=res)
         
         var_controle += 2
     
@@ -298,7 +301,7 @@ class WinMain():
         self.running = False
     
     def open_config(self):
-        win_main = WinConfig(title='Configurações', resolution=resolution)
+        win_main = WinConfig(title='Configurações', resolution=resolution_configs)
         win_main.win.mainloop()
 
     def constructor(self):
@@ -545,23 +548,38 @@ class WinConfig():
         self.running = False
     
     def constructor(self):
+        font_titles = ('Arial Bold', 14)
+        font_titles_down = ('Arial Bold', 12)
+        font_text = ('Arial', 10)
+        font_text_bold = ("Arial", 10, "bold")
+        font_text_up = ('Arial', 12)
+        font_text_down = ('Arial', 8)
+        
         frame = ttk.Frame(self.win)
-        frame.pack(padx=10, pady=10)
+        frame.pack(padx=10)
         
         tx_config = ttk.Label(frame, text='Configurações', font=['arial', 12])
-        tx_config.pack(pady=[0, 15])
+        tx_config.pack(pady=10)
         
         # Abrindo DB
         db_path = rf'{install_path}/db/db.db'
         db = DbSqlite(local=db_path)
         
+        # Combustíveis
+        # Label Frame valores
+        lb_frame_valores =tk.LabelFrame(frame, text=f'Valor de litros', font=font_text_bold)
+        lb_frame_valores.pack(anchor='n', padx=30, pady=(0, 5), ipadx=10)
+        
+        frame_litros = ttk.Frame(lb_frame_valores)
+        frame_litros.pack()
+        
         # Etanol
         current_etanol = str(db.get_instance(table='combustivel', key=['nome', 'Etanol'])[0][2]).replace('.', ',')
         
-        frame_etanol = ttk.Frame(frame)
-        frame_etanol.pack(pady=[0, 3], anchor='e')
+        frame_etanol = ttk.Frame(frame_litros)
+        frame_etanol.pack(padx=30, pady=[0, 5], anchor='ne')
         
-        tx_etanol = ttk.Label(frame_etanol, text='Valor unitário Etanol: R$')
+        tx_etanol = ttk.Label(frame_etanol, text='Etanol: R$')
         tx_etanol.pack(side=tk.LEFT)
         
         entry_etanol = ttk.Entry(frame_etanol, width=4)
@@ -571,10 +589,10 @@ class WinConfig():
         # Gasolina
         current_gasolina = str(db.get_instance(table='combustivel', key=['nome', 'Gasolina'])[0][2]).replace('.', ',')
         
-        frame_gasolina = ttk.Frame(frame)
-        frame_gasolina.pack(pady=[0, 3], anchor='e')
+        frame_gasolina = ttk.Frame(frame_litros)
+        frame_gasolina.pack(padx=30, pady=[0, 5], anchor='ne')
         
-        tx_gasolina = ttk.Label(frame_gasolina, text='Valor unitário Gasolina: R$')
+        tx_gasolina = ttk.Label(frame_gasolina, text='Gasolina: R$')
         tx_gasolina.pack(side=tk.LEFT)
         
         entry_gasolina = ttk.Entry(frame_gasolina, width=4)
@@ -584,10 +602,10 @@ class WinConfig():
         # Diesel
         current_diesel = str(db.get_instance(table='combustivel', key=['nome', 'Diesel'])[0][2]).replace('.', ',')
         
-        frame_diesel = ttk.Frame(frame)
-        frame_diesel.pack(pady=[0, 3], anchor='e')
+        frame_diesel = ttk.Frame(frame_litros)
+        frame_diesel.pack(padx=30, pady=[0, 5], anchor='ne')
         
-        tx_diesel = ttk.Label(frame_diesel, text='Valor unitário Diesel: R$')
+        tx_diesel = ttk.Label(frame_diesel, text='Diesel: R$')
         tx_diesel.pack(side=tk.LEFT)
         
         entry_diesel = ttk.Entry(frame_diesel, width=4)
@@ -609,19 +627,33 @@ class WinConfig():
             self.finish()
         
         # Test treeview
-        colunas = ("Prefixo", "Placa", "Res")
-        tree = ttk.Treeview(frame, columns=colunas, show='headings', height=2)
+        colunas = ("Prefixo", "Placa", "Reserva")
+        tree = ttk.Treeview(frame, columns=colunas, show='headings', height=1)
         tree.pack()
         
-        # Função para inserir novo registro
+        # Função para inserir/alterar registro
         def inserir_dado():
             prefixo = entry_prefixo.get()
             placa = entry_placa.get()
             res = entry_res.get()
+            
             if prefixo and placa and res:
-                print(f'dados inseridos: {prefixo}, {placa}, {res}')
-                carregar_dados()
+                prefixo_no_db = db.get_instance(table='viaturas', key=['prefixo', prefixo])
+                placa_no_db = db.get_instance(table='viaturas', key=['placa', placa])
+                
+                if prefixo_no_db and placa_no_db:
+                    if res.lower() != prefixo_no_db[0][2].lower():
+                        db.edit_instance(table='viaturas', key=['prefixo', prefixo], attribute='reserva', value=res)
+                elif prefixo_no_db and not placa_no_db:
+                    db.edit_instance(table='viaturas', key=['prefixo', prefixo], attribute='placa', value=placa)
+                elif not prefixo_no_db and placa_no_db:
+                    db.edit_instance(table='viaturas', key=['placa', placa], attribute='prefixo', value=prefixo)
+                else:
+                    db.new_instance(table='viaturas', tupla=(prefixo, placa, res))
+                    print(f'dados inseridos: {prefixo}, {placa}, {res}')
+                    
                 limpar_campos()
+                carregar_dados()
 
         # Função para carregar os dados no Treeview
         def carregar_dados():
@@ -643,23 +675,29 @@ class WinConfig():
                 entry_res.insert(0, valores[2])
 
         # Atualiza o registro no banco
-        def atualizar_dado():
+        def excluir_dado():
             prefixo = entry_prefixo.get()
             placa = entry_placa.get()
             res = entry_res.get()
             if prefixo and placa and res:
-                print(f'Atualiza no db: {prefixo}, {placa}, {res}')
-                carregar_dados()
+                db.del_instance(table='viaturas', key=['prefixo', prefixo])
+                
+                print(f'Excluido do db: {prefixo}, {placa}')
                 limpar_campos()
+                carregar_dados()
+                
 
         # Limpa os campos de entrada
         def limpar_campos():
+            for item in tree.get_children():
+                tree.delete(item)
+            
             entry_prefixo.delete(0, tk.END)
             entry_placa.delete(0, tk.END)
             entry_res.delete(0, tk.END)
 
         frame_entrys = ttk.Frame(frame)
-        frame_entrys.pack(padx=10, pady=10)
+        frame_entrys.pack(padx=10, pady=5)
         
         # Campos de entrada
         tk.Label(frame_entrys, text="Prefixo:").pack(side='left')
@@ -670,12 +708,18 @@ class WinConfig():
         entry_placa = tk.Entry(frame_entrys, width=8)
         entry_placa.pack(side='left')
 
-        tk.Label(frame_entrys, text="Res:").pack(side='left')
+        tk.Label(frame_entrys, text="Reserva:").pack(side='left')
         entry_res = tk.Entry(frame_entrys, width=8)
         entry_res.pack(side='left')
-
-        tk.Button(frame, text="Inserir", command=inserir_dado).pack(pady=5)
-        tk.Button(frame, text="Atualizar", command=atualizar_dado).pack(pady=5)
+        
+        # Botões
+        frame_bts = ttk.Frame(frame)
+        frame_bts.pack(padx=10, pady=5)
+        
+        tk.Button(frame_bts, text="Excluir", command=excluir_dado).pack(padx=5, side='left')
+        tk.Button(frame_bts, text="Inserir", command=inserir_dado).pack(padx=5, side='left')
+        
+        tk.Button(frame, text="Salvar", command=salvar, width=8).pack(padx=10, pady=5)
 
         for col in colunas:
             tree.heading(col, text=col)
@@ -684,11 +728,7 @@ class WinConfig():
         tree.bind("<<TreeviewSelect>>", selecionar_linha)
 
         carregar_dados()
-        
-        # bt salvar
-        bt_salvar = ttk.Button(frame, text='Salvar', command=salvar)
-        bt_salvar.pack(anchor='s', pady=[20,0])
 
 if __name__ == '__main__':
-    win_main = WinMain(resolution=resolution)
+    win_main = WinMain(resolution=resolution_main)
     win_main.win.mainloop()

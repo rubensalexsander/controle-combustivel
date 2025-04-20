@@ -1,14 +1,9 @@
 # App sets ------------------------------------------------------
-install_path = r'/home/alex/Documents/dev/repositorios/controle-combustivel/controle-combustivel'
+install_path = r'C:/Users/Pichau/Documents/dev/controle-combustivel/controle-combustivel'
 cia_name = 'Delegacia A - Cidade exemplo'
-resolution = [410, 285]
+resolution_main = [410, 285]
+resolution_configs = [600, 400]
 
-# VPs sets ------------------------------------------------------
-'''vps_dict = {
-    '123':['AAA-5544', 5],
-    '456':['BBB-2211', 7],
-    'outros':['', 9],
-}'''
 
 # Google sheet sets ---------------------------------------------
 spread_sheet_id = '19ogjTzqBT0_v-N_7EGmL2eyP22-_E-LhOCB6SR206OA'
