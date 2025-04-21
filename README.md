@@ -46,8 +46,8 @@ Sistema desenvolvido para **atividade extensionista do curso de Ciências da Com
 
 
 # Janelas do aplicativo:
-![Screenshot from 2025-04-10 11-32-26](https://github.com/user-attachments/assets/0fe479a5-36dd-435d-a16f-f9daec281aa7)
-![Screenshot from 2025-04-10 11-32-37](https://github.com/user-attachments/assets/45080c78-102b-47d6-9eaa-d3443e2f6e98)
+![Screenshot from 2025-04-21 09-59-58](https://github.com/user-attachments/assets/88580d42-2705-43f3-b2cd-88fb59c404e4)
+![Screenshot from 2025-04-21 10-00-18](https://github.com/user-attachments/assets/bf88a075-4c47-4320-85ed-95ce67716dfa)
 ![Screenshot from 2025-04-10 16-01-23](https://github.com/user-attachments/assets/a6296675-d4c4-4a8c-b711-ec54767aba79)
 
 # Relatório mensal (gerado pelo aplicativo):
